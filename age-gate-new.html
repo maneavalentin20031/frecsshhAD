@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Are you 18+?</title>
+  <link rel="icon" href="data:,">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #08090c;
+      --card: #0e0e14;
+      --border: #1e1e2a;
+      --border-a: #2a2860;
+      --accent: #7c6dff;
+      --accent-dim: #16153a;
+      --green: #22c55e;
+      --green-dim: rgba(34,197,94,0.1);
+      --green-border: rgba(34,197,94,0.2);
+      --text: #ffffff;
+      --muted: #52526a;
+      --mid: #888;
+      --font: -apple-system, 'Segoe UI', system-ui, sans-serif;
+    }
+
+    html, body {
+      height: 100%;
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ambient glow */
+    body::before {
+      content: '';
+      position: fixed;
+      top: -200px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 600px;
+      height: 500px;
+      border-radius: 50%;
+      background: radial-gradient(ellipse, rgba(124,109,255,0.08) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .page {
+      width: 100%;
+      max-width: 420px;
+      padding: 52px 24px 52px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      position: relative;
+    }
+
+    /* APP ICON */
+    .app-icon {
+      width: 72px;
+      height: 72px;
+      border-radius: 18px;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+      box-shadow: 0 0 0 1px var(--border), 0 0 28px rgba(124,109,255,0.2);
+      animation: fadeUp 0.4s ease both;
+    }
+
+    .app-icon img {
+      width: 72px;
+      height: 72px;
+      object-fit: cover;
+    }
+
+    /* TRUST PILL */
+    .trust-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      background: var(--green-dim);
+      border: 1px solid var(--green-border);
+      border-radius: 100px;
+      padding: 6px 16px;
+      font-size: 11px;
+      font-weight: 700;
+      color: #4ade80;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 24px;
+      animation: fadeUp 0.4s ease 0.06s both;
+    }
+
+    .pill-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--green);
+      animation: blink 2s ease-in-out infinite;
+    }
+
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.25} }
+
+    /* HEADLINE */
+    h1 {
+      font-size: clamp(2.6rem, 10vw, 3.4rem);
+      font-weight: 900;
+      line-height: 1.08;
+      letter-spacing: -0.03em;
+      color: #fff;
+      margin-bottom: 10px;
+      animation: fadeUp 0.4s ease 0.1s both;
+    }
+
+    h1 .accent { color: var(--accent); }
+
+    .subtext {
+      font-size: 0.88rem;
+      color: var(--mid);
+      line-height: 1.55;
+      margin-bottom: 28px;
+      max-width: 280px;
+      animation: fadeUp 0.4s ease 0.14s both;
+    }
+
+    /* INFO CARD */
+    .info-card {
+      width: 100%;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 18px 18px 14px;
+      margin-bottom: 24px;
+      text-align: left;
+      animation: fadeUp 0.4s ease 0.18s both;
+    }
+
+    .info-card-label {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 10.5px;
+      font-weight: 700;
+      letter-spacing: 0.11em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 14px;
+    }
+
+    .info-card-label::before {
+      content: '';
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--accent);
+      flex-shrink: 0;
+    }
+
+    .info-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .info-row:last-child { margin-bottom: 0; }
+
+    .info-icon {
+      width: 32px; height: 32px;
+      border-radius: 9px;
+      background: var(--accent-dim);
+      border: 1px solid var(--border-a);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    .info-icon svg {
+      width: 15px; height: 15px;
+      stroke: var(--accent);
+      fill: none;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .info-text {
+      font-size: 13px;
+      color: var(--mid);
+      line-height: 1.55;
+    }
+
+    .info-text strong { color: var(--text); font-weight: 600; }
+
+    /* BUTTONS */
+    .btn-yes {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 13px;
+      padding: 16px 24px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      font-family: var(--font);
+      cursor: pointer;
+      text-decoration: none;
+      margin-bottom: 9px;
+      position: relative;
+      overflow: hidden;
+      transition: background 0.15s, transform 0.15s, box-shadow 0.15s;
+      box-shadow: 0 0 40px rgba(124,109,255,0.3), 0 1px 0 rgba(255,255,255,0.1) inset;
+      animation: fadeUp 0.4s ease 0.22s both;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .btn-yes::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(255,255,255,0.1) 0%, transparent 100%);
+    }
+
+    .btn-yes:hover {
+      background: #8f82ff;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 28px rgba(124,109,255,0.4);
+    }
+
+    .btn-yes:active { transform: translateY(0); }
+
+    .btn-yes-arrow {
+      background: rgba(255,255,255,0.15);
+      border-radius: 7px;
+      width: 22px; height: 22px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.8rem;
+    }
+
+    .btn-no {
+      display: block;
+      width: 100%;
+      background: transparent;
+      color: var(--muted);
+      border: 1px solid var(--border);
+      border-radius: 13px;
+      padding: 14px 24px;
+      font-size: 0.88rem;
+      font-weight: 500;
+      font-family: var(--font);
+      cursor: pointer;
+      text-decoration: none;
+      transition: border-color 0.15s, color 0.15s;
+      animation: fadeUp 0.4s ease 0.26s both;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .btn-no:hover { border-color: rgba(255,255,255,0.14); color: var(--mid); }
+
+    /* TRUST ROW */
+    .trust-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      margin-top: 20px;
+      animation: fadeUp 0.4s ease 0.3s both;
+    }
+
+    .trust-item {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 0.68rem;
+      color: var(--muted);
+    }
+
+    .trust-sep { color: #1e1e2a; }
+
+    @keyframes fadeUp {
+      from { opacity:0; transform:translateY(14px); }
+      to { opacity:1; transform:translateY(0); }
+    }
+  </style>
+</head>
+<body>
+<div class="page">
+
+  <!-- LOGO -->
+  <div class="app-icon">
+    <img src="data:image/webp;base64,UklGRqYFAABXRUJQVlA4IJoFAADwHgCdASpfAF8APjEWikOiISEUCc0IIAMEsgBhWhfJW15/Aff38c8XC+zfbv2rfMA/TD/Afk7/IO7X5gP5B/Qv9P7Tnof9Az9Nusp9AD9lvTQ/Z34O/2p/6X+R9m/TTwQH5FaJXISvCvkL0vUyrx+/QfsE/yr+r/7j1SfWX+vHsiftIVnMIg8ZedcFm9wKkpAhD778hkxUDgQiqlRk3OlO+AxkRkLEPWuLIU3hJk5859wfKlD8Ptc2bkG40LOxKxPGJSpa1yrV8zjAjxweDlmYDgu2s43wOEgAA4KLVnLRTmfDIyLay/ciUZT4etbskA4HWHKI2QaHXwxWw9Yv9WFgAP79eSAwwFnQtLw//RnB/8mz/wO+CrTX8R6KTtXKg7h3mQvBfJIVxLbUY7wQzsOlknwcafAZCoBkw+srFJFmueZkZM7+jHz9B1pAAjV2t+GzLCn1HOnfXUTf90SY7OsCNSdYPyvHceaM+6zsZue8pwwfhE+s0EP+OPneCslT6dUVcgDCLveeb2KEfBduXtxDMVCAzsjBz9MENMYep/cfbDVBov4i0SrsObJ8A2Ss5m+RKR2OKPX2iUHHDv2mXP/rP8ZXu1P42ZBbcFqR9oDdB8t3UQTNBG2aApGqQw7JH//zhUYY6qf3/ziSfh9qWt1ivF8HaobX4iw2J9kFvoCHYcpLKEDJYLSOjfPiIRHfXgJpbGnUgmTUlcwlEH6PfCs/Jc50qOETdFJ4z8HXck6rF/g5VH/klH9lLNVZx/PnW7zocBnH3pGcvbtJv0dE0iKGkCEObgv/6A3+d9J4p0Y5AGbwc9gfNH6nMqmPTDV8e6HHZ8fS8PiATiiUNv08/rXjsThJX4QK/eGgSDQ/uIyhubERyRpmQf/8hGjKODKU+nnV+8gS1cCdZLABfKYip77d8US91u1t+6ohcDfF0T+ZszwCh6Kx6Qn/24TCsb8xvyUsgMg1Ks9r+VYqIFl8fiq3+m/i9ebU6llAlovb0HQY0c+2x6NHIDlHSoX2oFaj+dO4fQvUAgQk4gGhzW2dktmPBLg16xNuouKy8Uy/p7V+EOlPv6247Tmee8k/mSnuXzWzgOw5BCmya/vixfVlQSBgttEJn6jayg8dCzLl2aXimDU8AhVimho7c1CjOH+s3sfmNTxepMsG6M8tVVZ/uHMKkENdV4KMvJiEaSGJ7YGUtw312oNP8USM0e1fLnk3XwUXmFfsbVyKvTd7gP/M1QDmbgQQAQaQ19ZvVrzHyS81CF+JO/78ODjGGshBnyBOnv+Pcr4Jk/hzMGxDErA8EcVOV20+P/jvnnZ3+zl0TJRpJBrwc+QR1wEuo8VGv34kC6ULfLcI/LXwtgL6j8ujdwEPlrL/4ZJ/xf6pZO2YHLgRBjqXImauhFUWn7eB4D+LFKS9pVTge8emC/Bzs9/uwaJ/nAaGVOql4kj1Ypp1s0rYrzZ+sWhHfHury+38uHpPROdyL8zq6A3Kl1bfu1vU74ok2qgzWUKAQuOyM0PxKZUCHHMCWIZJVpEVbpY+crmZzVkI8fJEBv6yF79byvEU9dW0MdMFwevNUwpb5bFlv86JDmS2sln+4+53/hCGERpewpnbOUq2wC58CHm/YjCxKq8bulUzoJU6rIzET7Bg4ZszsCRJf++pqyi1UL3AQ6iNTy4R/EqP9oMkAZ85zsDftplBpQu+FsbPrc29p95gAifVLKqDv4sGxfNYt7CeAm70IiJxHT9ncnyrLRWEwXqID7ANU3JDkK4xgS91X5x9ApbL/MCKvhkkUSH8ENnoCsaYx30OPrsdt7RBNDLdaqq8GhPWXlfBW0BD0pM4mLi4rUMATeEl1tR0IBqxAYgp6OzFoweuHHo2oj/EP6sY/ccFk8KNH9ItdDv7gvzC870mG8d8CmKyMeOkbnhbgAA=" alt="FreeCash" />
+  </div>
+
+  <!-- TRUST PILL -->
+  <div class="trust-pill">
+    <span class="pill-dot"></span>
+    FYP Scroll Offer
+  </div>
+
+  <!-- HEADLINE -->
+  <h1>ARE YOU <span class="accent">18+</span>?</h1>
+  <p class="subtext">Earn real money by scrolling and completing simple tasks. Free to join.</p>
+
+  <!-- INFO CARD -->
+  <div class="info-card">
+    <div class="info-card-label">Important — please read</div>
+
+    <div class="info-row">
+      <div class="info-icon">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg>
+      </div>
+      <div class="info-text">
+        You must be <strong>at least 18 years old</strong> to unlock the Scroll Videos offer on FreeCash
+      </div>
+    </div>
+
+    <div class="info-row">
+      <div class="info-icon">
+        <svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg>
+      </div>
+      <div class="info-text">
+        Already have the app? <strong>Create a new account</strong> via this page — existing accounts are not eligible for this offer
+      </div>
+    </div>
+  </div>
+
+  <!-- BUTTONS -->
+  <a href="landing-page (2).html" class="btn-yes" id="btn-yes">
+    Yes, I am 18 or older
+    <span class="btn-yes-arrow">→</span>
+  </a>
+  <a href="blocked.html" class="btn-no" id="btn-no">No, I am under 18</a>
+
+  <!-- MICRO TRUST -->
+  <div class="trust-row">
+    <span class="trust-item">🔒 SSL secured</span>
+    <span class="trust-sep">·</span>
+    <span class="trust-item">✓ No credit card</span>
+    <span class="trust-sep">·</span>
+    <span class="trust-item">⚡ Free to join</span>
+  </div>
+
+</div>
+
+<script>
+(function(){
+  var qs = window.location.search;
+  if (qs) {
+    document.getElementById('btn-yes').href = 'landing-page (2).html' + qs;
+    document.getElementById('btn-no').href = 'blocked.html' + qs;
+  }
+})();
+</script>
+</body>
+</html>
